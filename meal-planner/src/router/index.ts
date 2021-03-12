@@ -32,7 +32,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/Tab4.vue')
       }
     ]
-  }
+  },
+  {
+    path: '/AddRecipe/',
+    component: () => import('@/views/AddRecipe.vue')
+  },
 ]
 
 const router = createRouter({
