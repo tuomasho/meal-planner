@@ -1,13 +1,6 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar color="primary">
-        <ion-buttons slot="start">
-          <ion-back-button></ion-back-button>
-        </ion-buttons>
-        <ion-title>Add new recipe</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <ToolBar :mainPage="false" :title="'Add new recipe'"/>
     <ion-content :fullscreen="true">
       <ion-list>
         <ion-list-header lines="none" mode="ios">
@@ -26,9 +19,10 @@
         </ion-list-header>
         <ion-item
           v-for="ingredient in state.lstIngredients"
-          :key="ingredient.strName"
+          :key="ingredient.idIngredient"
         >
-          <IngredientInput :ingredient="ingredient" />
+          <ion-input :placeholder="ingredient.strAmmount"></ion-input>
+          <ion-input :placeholder="ingredient.strName"></ion-input>
         </ion-item>
 
         <ion-button
@@ -40,7 +34,7 @@
           <ion-icon :icon="add"></ion-icon>
         </ion-button>
 
-        <ion-list-header>
+        <ion-list-header lines="none" mode="ios">
           <ion-label>Instructions:</ion-label>
         </ion-list-header>
 
@@ -48,6 +42,11 @@
           v-for="instruction in state.lstInstructions"
           :key="instruction.idInstruction"
         >
+          <ion-label> {{ instruction.strPhase }} </ion-label>
+          <ion-textarea
+            auto-grow="true"
+            :placeholder="instruction.strDetails"
+          ></ion-textarea>
         </ion-item>
 
         <ion-button
@@ -69,12 +68,6 @@
 <script lang="ts">
 import {
   IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButtons,
-  IonBackButton,
   IonItem,
   IonLabel,
   IonTextarea,
@@ -83,23 +76,18 @@ import {
   IonListHeader,
   IonButton,
   IonIcon,
+  IonContent,
 } from "@ionic/vue";
 import { reactive } from "vue";
 import Ingredient from "../interfaces/IIngredient";
 import Instruction from "../interfaces/IInstruction";
 import { add, saveOutline } from "ionicons/icons";
-import IngredientInput from '@/components/IngredientInput.vue';
+import ToolBar from "@/components/ToolBar.vue";
 
 export default {
   name: "AddRecipe",
   components: {
     IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButtons,
-    IonBackButton,
     IonItem,
     IonLabel,
     IonTextarea,
@@ -108,39 +96,40 @@ export default {
     IonListHeader,
     IonButton,
     IonIcon,
-    IngredientInput
+    ToolBar,
+    IonContent,
   },
 
   setup() {
-
     const state = reactive({
       lstIngredients: [
-        { strName: "Ingredient", strAmmount: "Ammount" },
+        { idIngredient: "id0" , strName: "Ingredient", strAmmount: "Ammount" },
       ] as Ingredient[],
       lstInstructions: [
         { idInstruction: "temp", strDetails: "Fill here", strPhase: "1" },
       ] as Instruction[],
 
-      x: 1,
+      instructionCount: 1,
+      ingredientCount: 1,
     });
 
     const addIngredient = () => {
+      state.ingredientCount += 1;
       state.lstIngredients.push({
+        idIngredient: "id" + state.lstIngredients.length,
         strName: "Add Ingredient",
         strAmmount: "Add ammount",
       });
-      console.log("add ingredient");
     };
 
     const addInstrcution = () => {
-
-      state.x += 1;
+      state.instructionCount += 1;
       state.lstInstructions.push({
-        idInstruction: "temp" + state.lstInstructions.length as string,
+        idInstruction: ("temp" + state.lstInstructions.length) as string,
         strDetails: "Fill in here",
-        strPhase: `${state.x}`,
+        strPhase: `${state.instructionCount}`,
       });
-    }
+    };
 
     return {
       state,
